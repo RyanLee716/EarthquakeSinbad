@@ -5,7 +5,7 @@ public class Parser {
   public static void main(String[] args) {
     int DELAY = 300;   // 5 minute cache delay
     
-    DataSource ds = DataSource.connect("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"); // or use ...all_day, etc.
+    DataSource ds = DataSource.connect("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"); // or use ...all_day, etc.
     ds.setCacheTimeout(DELAY);    
     
     ds.load();
@@ -17,7 +17,8 @@ public class Parser {
             "features/properties/url");
     for (Quake q : latest) {
         System.out.println(q.description + " (" + q.date() + ") info at: " + q.url);
-    }
+        System.out.println(q.magnitude);
+      }
     
     ds.printUsageString();
 
@@ -40,19 +41,5 @@ class Quake {
   
   public Date date() {
     return new Date(timestamp);
-  }
-  
-  public boolean equals(Object o) {
-    if (o.getClass() != this.getClass()) 
-      return false;
-    Quake that = (Quake) o;
-    return that.description.equals(this.description)
-      && that.timestamp == this.timestamp
-      && that.magnitude == this.magnitude;
-  }
-  
-  public int hashCode() {                
-    return (int) (31 * (31 * this.description.hashCode()
-                          + this.timestamp) + this.magnitude);
   }
 }
