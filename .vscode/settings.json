@@ -3,6 +3,8 @@
         "."
     ],
     "java.project.referencedLibraries": [
-        "c:\\Users\\6\\Desktop\\EarthquakeSinbad\\sinbad.jar"
+        "jcommon-1.0.24.jar",
+        "c:\\Users\\6\\Desktop\\EarthquakeSinbad\\sinbad.jar",
+        "c:\\Users\\6\\Desktop\\EarthquakeSinbad\\jfreechart-1.5.5.jar"
     ]
 }
