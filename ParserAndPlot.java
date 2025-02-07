@@ -1,10 +1,6 @@
 import core.data.*;
 import java.util.*;
 
-
-import java.awt.Color;
-import java.awt.Font;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -16,12 +12,28 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 public class ParserAndPlot extends ApplicationFrame {
+  DataSource ds;
+  List<Quake> latest;
+  double[] magnitudeList;
   public ParserAndPlot (final String title) {
     super(title);
+    
+    this.ds = DataSource.connect("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"); // or use ...all_day, etc.
+    ds.setCacheTimeout(300);    
+    
+    ds.load();
+    
+    this.latest = ds.fetchList("Quake",
+            "features/properties/title",
+            "features/properties/time",
+            "features/properties/mag",
+            "features/properties/url");
+    this.magnitudeList = new double[latest.size()];
+
     IntervalXYDataset dataset = createDataset();
     JFreeChart chart = ChartFactory.createXYBarChart(
       "Recent Earthquake Magnitudes (1 Month)",
-      "Magnitude", 
+      "Total Number of Quakes: " + magnitudeList.length, 
       false,
       "Frequency", 
       dataset,
@@ -34,22 +46,10 @@ public class ParserAndPlot extends ApplicationFrame {
     chartPanel.setPreferredSize(new java.awt.Dimension(775, 270));
     setContentPane(chartPanel);
   }
+
+  
   
   private IntervalXYDataset createDataset() {
-    int DELAY = 300;   // 5 minute cache delay
-    
-    DataSource ds = DataSource.connect("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"); // or use ...all_day, etc.
-    ds.setCacheTimeout(DELAY);    
-    
-    ds.load();
-    
-    List<Quake> latest = ds.fetchList("Quake",
-            "features/properties/title",
-            "features/properties/time",
-            "features/properties/mag",
-            "features/properties/url");
-
-    double[] magnitudeList = new double[latest.size()];
     double largest = latest.get(0).magnitude;
     double smallest = latest.get(0).magnitude;
     for (int i = 0; i < latest.size(); i++) {
@@ -67,6 +67,7 @@ public class ParserAndPlot extends ApplicationFrame {
     dataset.setType(HistogramType.RELATIVE_FREQUENCY);
     int numBins = (int) Math.ceil((largest - smallest) / 0.5);
     dataset.addSeries("Magnitudes", magnitudeList, numBins, Math.floor(smallest * 2) / 2, Math.ceil(largest * 2) / 2); 
+    System.out.println(magnitudeList.length);
     return dataset;     
   }
 
