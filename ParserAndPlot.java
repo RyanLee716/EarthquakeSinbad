@@ -21,7 +21,7 @@ public class ParserAndPlot extends ApplicationFrame {
     IntervalXYDataset dataset = createDataset();
     JFreeChart chart = ChartFactory.createXYBarChart(
       "Recent Earthquake Magnitudes (1 Month)",
-      "Magnitutde", 
+      "Magnitude", 
       false,
       "Frequency", 
       dataset,
@@ -31,7 +31,7 @@ public class ParserAndPlot extends ApplicationFrame {
       false
     );
     final ChartPanel chartPanel = new ChartPanel(chart);
-    chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+    chartPanel.setPreferredSize(new java.awt.Dimension(775, 270));
     setContentPane(chartPanel);
   }
   
@@ -66,7 +66,7 @@ public class ParserAndPlot extends ApplicationFrame {
     HistogramDataset dataset = new HistogramDataset();
     dataset.setType(HistogramType.RELATIVE_FREQUENCY);
     int numBins = (int) Math.ceil((largest - smallest) / 0.5);
-    dataset.addSeries("H1", magnitudeList, numBins, Math.floor(smallest * 2) / 2, Math.ceil(largest * 2) / 2); 
+    dataset.addSeries("Magnitudes", magnitudeList, numBins, Math.floor(smallest * 2) / 2, Math.ceil(largest * 2) / 2); 
     return dataset;     
   }
 
